@@ -1,27 +1,21 @@
 from conans import ConanFile, CMake
+import shutil, os
 
 
 class ConsumerConan(ConanFile):
-    name = "consumer"
-    version = "0.1"
-    license = "<Put the package license here>"
-    url = "<Package recipe repository url here, for issues about the package>"
-    description = "<Description of Consumer here>"
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False]}
     default_options = "shared=False"
     generators = "cmake"
     exports_sources = "src/*"
+    build_requires = "source/0.1@user/testing"
 
     def build(self):
+        src_folder = os.path.join(self.deps_cpp_info["source"].rootpath, "src")
+        shutil.copytree(src_folder, "src/external")
         cmake = CMake(self)
         cmake.configure(source_folder="src")
         cmake.build()
-
-        # Explicit way:
-        # self.run('cmake %s/hello %s'
-        #          % (self.source_folder, cmake.command_line))
-        # self.run("cmake --build . %s" % cmake.build_config)
 
     def package(self):
         self.copy("*.h", dst="include", src="src")
@@ -32,4 +26,4 @@ class ConsumerConan(ConanFile):
         self.copy("*.a", dst="lib", keep_path=False)
 
     def package_info(self):
-        self.cpp_info.libs = ["hello"]
+        self.cpp_info.libs = ["greet"]

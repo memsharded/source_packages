@@ -4,4 +4,5 @@ project(MyHello CXX)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
-add_library(hello hello.cpp)
+include_directories(external)
+add_library(greet greet.cpp external/hello.cpp)
